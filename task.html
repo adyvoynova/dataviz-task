@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bubble Chart</title>
+    <style>
+        #canvasWrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        #chartHeader {
+            font-family: sans-serif;
+            font-size: 24px;
+            color: #212529;
+            letter-spacing: 0.7;
+        }
+
+        #bubbleCanvas {
+            margin: auto;
+            width: 25%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="canvasWrapper">
+        <h1 id="chartHeader">Bubble Chart</h1>
+        <canvas id="bubbleCanvas" width="450" height="450"></canvas>
+    </div>
+
+    <script>
+        // Get the canvas element and its context
+        const canvas = document.getElementById('bubbleCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set up a clipping region
+        // The clipping region is used to draw bubbles inside the grid
+        const regionX = 35;
+        const regionY = 15;
+        const regionWidth = 400;
+        const regionHeight = 400;
+
+        // Set up constants
+        const maxValue = 100;
+        const scale = 4;
+
+        // Draw the canvas coordinate lines
+        function drawCanvasLines() {
+            // Clear the canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw vertical grid lines
+            for (let i = regionX; i <= canvas.width; i += 80) {
+                // Draw each vertical line
+                ctx.strokeStyle = "rgb(206,212,218)";
+                ctx.lineWidth = 0.5;
+                ctx.beginPath();
+                ctx.moveTo(i, 15);
+                ctx.lineTo(i, canvas.height - 30);
+                ctx.stroke();
+            }
+
+            // Draw horizontal grid lines
+            for (let i = regionY; i <= canvas.height; i += 80) {
+                // Draw each horizontal line
+                ctx.beginPath();
+                ctx.moveTo(30, i);
+                ctx.lineTo(canvas.width - 15, i);
+                ctx.stroke();
+            }
+        }
+
+        function generateDataPoints() {
+            let data = [];
+
+            // Randomly generate data for the five bubble points
+            for (let i = 0; i < 5; i++) {
+                // Choose random values between 0 and 100 for x and y
+                // Choose a random value between 0 and 30 for the bubble value
+                // It is between 0 and 30 for demonstration purposes - 
+                // it can be changed to be between 0 and 100 as by the question description
+                const x = Math.floor(Math.random() * 100);
+                const y = Math.floor(Math.random() * 100);
+                const value = Math.floor(Math.random() * 100);
+
+                // Insert the data point into the data array
+                data.push([x, y, value]);
+            }
+
+            return data;
+        }
+
+        // Draw the bubble chart
+        function drawBubbleChart(data) {
+            // Clip the region from the canvas
+            ctx.beginPath();
+            ctx.rect(regionX, regionY, regionWidth, regionHeight);
+            ctx.clip();
+
+            // Loop through each data point
+            for (let i = 0; i < 5; i++) {
+
+                // Scale x and y to fit the canvas coordinates and the canvas size
+                const xScaled = (maxValue - data[i][0]) * scale;
+                const yScaled = (maxValue - data[i][1]) * scale;
+
+                // Set the color for each bubble
+                ctx.fillStyle = 'rgba(240, 62, 62, 0.5)';
+
+                // Draw the bubble
+                ctx.beginPath();
+                ctx.arc(xScaled, yScaled, data[i][2], 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.closePath();
+            }
+        }
+
+        function writeLabels() {
+            ctx.font = "12px Comic Sans MS";
+            ctx.fillStyle = "#000000";
+            ctx.textAlign = "center";
+
+            // Add static labels to the chart
+            ctx.fillText("0", 15, 420);
+            ctx.fillText("20", 15, 340);
+            ctx.fillText("40", 15, 260);
+            ctx.fillText("60", 15, 180);
+            ctx.fillText("80", 15, 100);
+            ctx.fillText("100", 15, 20);
+
+            ctx.fillText("0", 35, 440);
+            ctx.fillText("20", 115, 440);
+            ctx.fillText("40", 195, 440);
+            ctx.fillText("60", 275, 440);
+            ctx.fillText("80", 355, 440);
+            ctx.fillText("100", 435, 440);
+
+        }
+
+        // Function calls
+        const data = generateDataPoints();
+        console.log(data);
+        drawCanvasLines();
+        writeLabels();
+        drawBubbleChart(data);
+    </script>
+</body>
+
+</html>
